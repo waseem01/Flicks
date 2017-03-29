@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  MovieView
 //
-//  Created by Waseem Mohd on 3/28/17.
+//  Created by Mohammed on 3/28/17.
 //  Copyright © 2017 Mohammed. All rights reserved.
 //
 

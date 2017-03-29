@@ -21,11 +21,13 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 
         tableView.delegate = self
         tableView.dataSource = self
-
-        MoviesDbService().movieListing(onSuccess: { results -> Void in
+        activityIndicator.startAnimating()
+        MoviesDbService().fetchMovies(onSuccess: { results -> Void in
             self.movies = results
+            self.activityIndicator.stopAnimating()
+            self.activityIndicator.removeFromSuperview()
             self.tableView.reloadData()
-        }, onFailure: { error -> Void in
+        }, onError: { error -> Void in
             let alertViewController = UIAlertController(title: "Error!",
                                                         message: "Something bad happened.\nPlease try again later",
                                                         preferredStyle: .alert)
@@ -34,6 +36,12 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         })
     }
 
+//    func userNotificationCenter(center: UNUserNotificationCenter, willPresentNotification notification: UNNotification, withCompletionHandler completionHandler: (UNNotificationPresentationOptions) -> Void)
+//    {
+//        completionHandler([UNNotificationPresentationOptions.Alert,UNNotificationPresentationOptions.Sound,UNNotificationPresentationOptions.Badge])
+//    }
+
+    //MARK: UITableViewDelegate
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let movies = movies {
             return movies.count
@@ -47,7 +55,20 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         let movie = movies?[indexPath.row]
         cell.titleLabel.text = movie?.title
         cell.overviewLabel.text = movie?.overview
-        cell.posterView.setImageWith((movie?.imageUrl)!)
+        cell.posterView.setImageWith((movie?.posterUrl)!)
         return cell;
     }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.navigationController?.pushViewController(MovieDetailsViewController(movie: (movies?[indexPath.row])!), animated: true)
+    }
+
+    //MARK: Properties
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        indicator.center = self.view.center
+        indicator.hidesWhenStopped = true
+        self.view.addSubview(indicator)
+        return indicator
+    }()
 }

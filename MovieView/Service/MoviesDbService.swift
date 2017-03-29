@@ -10,42 +10,30 @@ import UIKit
 import Unbox
 
 typealias response = (_ result: [MoviesModel]) -> Void
-typealias failure = (_ error: NSError) -> Void
+typealias failure = (_ error: Error) -> Void
 
 class MoviesDbService {
 
-    var movies: [MoviesModel] = []
-
-    func movieListing(onSuccess: @escaping response, onFailure: failure) {
+    func fetchMovies(onSuccess: @escaping response, onError: @escaping failure) {
 
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed";
-        let url = NSURL(string: "https://api.themoviedb.org/3/movie/now_playing?page=1&language=en-US&api_key=\(apiKey)")
+        let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?page=1&language=en-US&api_key=\(apiKey)")!
 
-        let request = NSMutableURLRequest(url: url! as URL)
-        request.httpMethod = "GET"
-
-        let task = URLSession.shared.dataTask(with: request as URLRequest) {
-            data, response, error in
-
-            if error != nil {
-                print("error=\(error)")
-                return
+        let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
+        let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
+        let task: URLSessionDataTask = session.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+            if let error = error {
+                onError(error)
+            } else if let data = data,
+                let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary {
+                onSuccess(self.processResponse(response: dataDictionary))
             }
-
-            do {
-                if let responseDictionary = try JSONSerialization.jsonObject(with: data!, options: []) as? NSDictionary {
-                    self.movies = self.processResponse(response: responseDictionary)
-                }
-            } catch let error as NSError {
-                print(error.localizedDescription)
-            }
-            onSuccess(self.movies)
         }
         task.resume()
     }
 
 
-    func processResponse(response: NSDictionary) -> [MoviesModel] {
+    private func processResponse(response: NSDictionary) -> [MoviesModel] {
 
         var movies = [MoviesModel]()
 
