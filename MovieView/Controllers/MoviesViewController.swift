@@ -15,6 +15,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet weak var tableView: UITableView!
 
     var movies: [MoviesModel]?
+    let pullToRefreshControl = UIRefreshControl()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +23,17 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.delegate = self
         tableView.dataSource = self
         activityIndicator.startAnimating()
+        pullToRefreshControl.addTarget(self, action: #selector(pullToRefresh(_:)), for: .valueChanged)
+        tableView.insertSubview(pullToRefreshControl, at: 0)
+        fetchMovies()
+    }
+
+    @objc private func pullToRefresh(_ refreshControl: UIRefreshControl) {
+        fetchMovies()
+        pullToRefreshControl.endRefreshing()
+    }
+
+    private func fetchMovies() {
         MoviesDbService().fetchMovies(onSuccess: { results -> Void in
             self.movies = results
             self.activityIndicator.stopAnimating()
