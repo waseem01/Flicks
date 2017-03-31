@@ -53,6 +53,15 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 //        completionHandler([UNNotificationPresentationOptions.Alert,UNNotificationPresentationOptions.Sound,UNNotificationPresentationOptions.Badge])
 //    }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let movieDetailsController = segue.destination as! MovieDetailsViewController
+        let cell = sender as! MovieCell
+        let indexPath = tableView.indexPath(for: cell)
+        var movie = movies?[(indexPath?.row)!]
+        movie?.posterImage = cell.posterView.image!
+        movieDetailsController.movie = movie
+    }
+
     //MARK: UITableViewDelegate
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let movies = movies {
@@ -71,12 +80,12 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         return cell;
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as! MovieCell
-        var movie = movies?[indexPath.row]
-        movie?.posterImage = cell.posterView.image!
-        self.navigationController?.pushViewController(MovieDetailsViewController(movie: movie!), animated: true)
-    }
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let cell = tableView.cellForRow(at: indexPath) as! MovieCell
+//        var movie = movies?[indexPath.row]
+//        movie?.posterImage = cell.posterView.image!
+//        self.navigationController?.pushViewController(MovieDetailsViewController(movie: movie!), animated: true)
+//    }
 
     //MARK: Properties
     private lazy var activityIndicator: UIActivityIndicatorView = {
