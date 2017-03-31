@@ -7,10 +7,13 @@
 //
 
 import UIKit
+import UserNotifications
+import UserNotificationsUI
 import Unbox
 import AFNetworking
 
 class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    let requestIdentifier = "NetworkError"
 
     @IBOutlet weak var tableView: UITableView!
 
@@ -40,18 +43,35 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             self.activityIndicator.removeFromSuperview()
             self.tableView.reloadData()
         }, onError: { error -> Void in
-            let alertViewController = UIAlertController(title: "Error!",
-                                                        message: "Something bad happened.\nPlease try again later",
-                                                        preferredStyle: .alert)
-            alertViewController.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-            self.present(alertViewController, animated: true, completion: nil)
+            self.activityIndicator.stopAnimating()
+            self.activityIndicator.removeFromSuperview()
+            let content = UNMutableNotificationContent()
+            content.title = "Network Error!"
+            content.body = "Please pull down to refresh."
+            content.sound = UNNotificationSound.default()
+
+            if let path = Bundle.main.path(forResource: "Error", ofType: "png") {
+                let url = URL(fileURLWithPath: path)
+                do {
+                    let attachment = try UNNotificationAttachment(identifier: "errorIcon", url: url, options: nil)
+                    content.attachments = [attachment]
+                } catch {
+                    print("attachment not found.")
+                }
+            }
+
+            let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1.0, repeats: false)
+            let request = UNNotificationRequest(identifier:self.requestIdentifier, content: content, trigger: trigger)
+
+            UNUserNotificationCenter.current().delegate = self
+            UNUserNotificationCenter.current().add(request){(error) in
+                if (error != nil){
+                    //Do Something
+                }
+            }
+
         })
     }
-
-//    func userNotificationCenter(center: UNUserNotificationCenter, willPresentNotification notification: UNNotification, withCompletionHandler completionHandler: (UNNotificationPresentationOptions) -> Void)
-//    {
-//        completionHandler([UNNotificationPresentationOptions.Alert,UNNotificationPresentationOptions.Sound,UNNotificationPresentationOptions.Badge])
-//    }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let movieDetailsController = segue.destination as! MovieDetailsViewController
@@ -80,12 +100,12 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         return cell;
     }
 
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let cell = tableView.cellForRow(at: indexPath) as! MovieCell
-//        var movie = movies?[indexPath.row]
-//        movie?.posterImage = cell.posterView.image!
-//        self.navigationController?.pushViewController(MovieDetailsViewController(movie: movie!), animated: true)
-//    }
+    //    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    //        let cell = tableView.cellForRow(at: indexPath) as! MovieCell
+    //        var movie = movies?[indexPath.row]
+    //        movie?.posterImage = cell.posterView.image!
+    //        self.navigationController?.pushViewController(MovieDetailsViewController(movie: movie!), animated: true)
+    //    }
 
     //MARK: Properties
     private lazy var activityIndicator: UIActivityIndicatorView = {
@@ -95,4 +115,14 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         self.view.addSubview(indicator)
         return indicator
     }()
+}
+
+extension MoviesViewController: UNUserNotificationCenterDelegate{
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("Notification triggered")
+        if notification.request.identifier == requestIdentifier{
+            completionHandler( [.alert,.sound,.badge])
+        }
+    }
 }
