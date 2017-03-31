@@ -22,21 +22,25 @@ class MovieDetailsViewController: UIViewController {
         super.viewDidLoad()
         scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         setBackgroundView()
+        view.addSubview(scrollView)
     }
 
     //MARK Private methods
     private func setBackgroundView() {
-        DispatchQueue.global().async {
-            let data = try? Data(contentsOf: (self.movie?.backdropUrl)!)
-            DispatchQueue.main.async {
-                let image = UIImage(data: data!)!
-                let imageView = UIImageView(frame: self.view.frame)
-                imageView.image = image
-                self.view.addSubview(imageView)
-                self.view.sendSubview(toBack: imageView)
-            }
-        }
-        view.addSubview(scrollView)
+//        DispatchQueue.global().async {
+//            let data = try? Data(contentsOf: (self.movie?.posterUrl)!)
+//            DispatchQueue.main.async {
+//                let image = UIImage(data: data!)!
+//                let imageView = UIImageView(frame: self.view.frame)
+//                imageView.image = image
+//                self.view.addSubview(imageView)
+//                self.view.sendSubview(toBack: imageView)
+//            }
+//        }
+        let imageView = UIImageView(frame: self.view.frame)
+        imageView.image = movie?.backgroundImage
+        self.view.addSubview(imageView)
+        self.view.sendSubview(toBack: imageView)
     }
 
     //MARK: Properties

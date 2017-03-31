@@ -18,6 +18,7 @@ struct MoviesModel: Unboxable {
     let backdropUrl: URL
     let releaseDate: String
     var rating: String
+    var backgroundImage: UIImage?
 
     init(unboxer: Unboxer) throws {
         self.title = try unboxer.unbox(key: "title")
@@ -29,5 +30,16 @@ struct MoviesModel: Unboxable {
         self.backdropUrl = URL(string: baseUrl + "w320/" +  backdroppath)!
         self.releaseDate = try unboxer.unbox(key: "release_date")
         self.rating = try unboxer.unbox(key: "vote_average")
+    }
+
+    var posterImage: UIImage? {
+
+        get {
+            return backgroundImage
+        }
+
+        set(newImage) {
+            backgroundImage = newImage
+        }
     }
 }

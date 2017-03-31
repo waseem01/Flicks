@@ -72,7 +72,10 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.navigationController?.pushViewController(MovieDetailsViewController(movie: (movies?[indexPath.row])!), animated: true)
+        let cell = tableView.cellForRow(at: indexPath) as! MovieCell
+        var movie = movies?[indexPath.row]
+        movie?.posterImage = cell.posterView.image!
+        self.navigationController?.pushViewController(MovieDetailsViewController(movie: movie!), animated: true)
     }
 
     //MARK: Properties
