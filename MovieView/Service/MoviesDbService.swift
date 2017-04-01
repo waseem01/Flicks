@@ -16,8 +16,12 @@ class MoviesDbService {
 
     func fetchMovies(onSuccess: @escaping response, onError: @escaping failure) {
 
-        let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed";
-        let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?page=1&language=en-US&api_key=\(apiKey)")!
+        var APIBaseURL: String = ""
+        if let path = Bundle.main.path(forResource: "Info", ofType: "plist") {
+            let plistDict = NSDictionary(contentsOfFile: path)
+            APIBaseURL = plistDict!["APIBaseURL"] as! String
+        }
+        let url = URL(string: APIBaseURL)!
 
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
         let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
@@ -37,16 +41,19 @@ class MoviesDbService {
 
         var movies = [MoviesModel]()
 
-        let data = response["results"] as! [NSDictionary]
+        if response.count > 0 {
+            let data = response["results"] as! [NSDictionary]
 
-        for item in data {
-            do {
-                let movie: MoviesModel = try unbox(dictionary: item as! UnboxableDictionary)
-                movies.append(movie)
-            } catch {
-                print("Unable to Initialize Movies Data")
+            for item in data {
+                do {
+                    let movie: MoviesModel = try unbox(dictionary: item as! UnboxableDictionary)
+                    movies.append(movie)
+                } catch {
+                    print("Unable to Initialize Movies Data")
+                }
             }
         }
         return movies
     }
+    
 }
