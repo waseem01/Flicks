@@ -8,22 +8,32 @@
 
 import UIKit
 import Foundation
-import UserNotifications
-import UserNotificationsUI
 import Unbox
 import AFNetworking
 import KRProgressHUD
 
 class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UITabBarDelegate {
-    let requestIdentifier = "NetworkError"
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet var searchBar: UISearchBar!
     @IBOutlet weak var tabBar: UITabBar!
-
+    @IBOutlet weak var bannerView: UIView!
+    @IBOutlet weak var errorIcon: UIImageView!
+    @IBOutlet weak var errorLabel: UILabel!
+    
     var movies:[MoviesModel] = []
     var filteredMovies:[MoviesModel] = []
     let pullToRefreshControl = UIRefreshControl()
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.bannerView.isHidden = true
+        self.errorIcon.isHidden = true
+        self.errorLabel.isHidden = true
+        var frame = self.bannerView.frame
+        frame.size = CGSize(width: self.bannerView.frame.width, height: 0)
+        self.bannerView.frame = frame
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,41 +58,53 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 
     private func fetchMovies() {
         MoviesDbService().fetchMovies(onSuccess: { results -> Void in
-
             KRProgressHUD.dismiss()
+            self.hideBannerMessage()
             if results.count > 0 {
                 self.movies = results
                 self.filteredMovies = results
                 self.tableView.reloadData()
             }
         }, onError: { error -> Void in
-
             KRProgressHUD.dismiss()
-            let content = UNMutableNotificationContent()
-            content.title = "Network Error!"
-            content.body = "Please pull down to refresh."
-            content.sound = UNNotificationSound.default()
+            self.showBannerMessage()
+        })
+    }
 
-            if let path = Bundle.main.path(forResource: "Error", ofType: "png") {
-                let url = URL(fileURLWithPath: path)
-                do {
-                    let attachment = try UNNotificationAttachment(identifier: "errorIcon", url: url, options: nil)
-                    content.attachments = [attachment]
-                } catch {
-                    print("attachment not found.")
-                }
-            }
+    private func hideBannerMessage() {
+        UIView.animate(
+            withDuration: 0.7,
+            delay: 0.5,
+            options: .curveEaseOut,
+            animations: {
+                self.bannerView.frame.origin.y = -30
+        },
+            completion: { _ in
+                self.bannerView.isHidden = true
+                self.errorIcon.isHidden = true
+                self.errorLabel.isHidden = true
+                var frame = self.bannerView.frame
+                frame.size = CGSize(width: self.bannerView.frame.width, height: 0)
+                self.bannerView.frame = frame
+        })
+    }
 
-            let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1.0, repeats: false)
-            let request = UNNotificationRequest(identifier:self.requestIdentifier, content: content, trigger: trigger)
-
-            UNUserNotificationCenter.current().delegate = self
-            UNUserNotificationCenter.current().add(request){(error) in
-                if (error != nil){
-                    //Do Something
-                }
-            }
-
+    func showBannerMessage() {
+        bannerView.isHidden = false
+        errorIcon.isHidden = false
+        errorLabel.isHidden = false
+        self.bannerView.frame.origin.y = -30
+        var frame = bannerView.frame
+        frame.size = CGSize(width: bannerView.frame.width, height: 30)
+        bannerView.frame = frame
+        UIView.animate(
+            withDuration: 0.7,
+            delay: 0.5,
+            options: .curveEaseOut,
+            animations: {
+                self.bannerView.frame.origin.y = 0
+        },
+            completion: { _ in
         })
     }
 
@@ -134,14 +156,4 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
 
-}
-
-extension MoviesViewController: UNUserNotificationCenterDelegate{
-
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("Notification triggered")
-        if notification.request.identifier == requestIdentifier{
-            completionHandler( [.alert,.sound,.badge])
-        }
-    }
 }
