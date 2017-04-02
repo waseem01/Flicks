@@ -8,5 +8,6 @@ target 'MovieView' do
   # Pods for MovieView
   pod 'Unbox'
   pod 'AFNetworking'
-
+  pod 'KRProgressHUD'
+  
 end

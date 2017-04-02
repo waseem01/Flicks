@@ -12,6 +12,7 @@ import UserNotifications
 import UserNotificationsUI
 import Unbox
 import AFNetworking
+import KRProgressHUD
 
 class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
     let requestIdentifier = "NetworkError"
@@ -26,10 +27,10 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        KRProgressHUD.show(progressHUDStyle: .black, message: "Loading...")
         tableView.delegate = self
         tableView.dataSource = self
         searchBar.delegate = self
-        activityIndicator.startAnimating()
         pullToRefreshControl.addTarget(self, action: #selector(pullToRefresh(_:)), for: .valueChanged)
         tableView.insertSubview(pullToRefreshControl, at: 0)
         fetchMovies()
@@ -45,16 +46,15 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     private func fetchMovies() {
         MoviesDbService().fetchMovies(onSuccess: { results -> Void in
 
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.removeFromSuperview()
+            KRProgressHUD.dismiss()
             if results.count > 0 {
                 self.movies = results
                 self.filteredMovies = results
                 self.tableView.reloadData()
             }
         }, onError: { error -> Void in
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.removeFromSuperview()
+
+            KRProgressHUD.dismiss()
             let content = UNMutableNotificationContent()
             content.title = "Network Error!"
             content.body = "Please pull down to refresh."
@@ -115,15 +115,6 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         cell.posterView.setImageWith((movie.posterUrl))
         return cell;
     }
-
-    //MARK: Properties
-    private lazy var activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-        indicator.center = self.view.center
-        indicator.hidesWhenStopped = true
-        self.view.addSubview(indicator)
-        return indicator
-    }()
 }
 
 extension MoviesViewController: UNUserNotificationCenterDelegate{
