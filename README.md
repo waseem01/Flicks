@@ -15,9 +15,9 @@ The following **required** functionality is complete:
 * [x] User can pull to refresh the movie list.
 
 The following **optional** features are implemented:
-* [ ] Add a tab bar for Now Playing or Top Rated movies.
+* [x] Add a tab bar for Now Playing or Top Rated movies.
 * [ ] Implement a UISegmentedControl to switch between a list view and a grid view.
-* [ ] Add a search bar.
+* [x] Add a search bar.
 * [ ] All images fade in as they are loading.
 * [ ] For the large poster, load the low-res image first and switch to high-res when complete.
 * [ ] Customize the highlight and selection effect of the cell.
@@ -26,6 +26,7 @@ The following **optional** features are implemented:
 ## 3rd Party
 * [x] AFNetworking
 * [x] Unbox
+* [x] KRProgressHUD
 
 ## Video Walkthrough 
 

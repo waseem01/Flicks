@@ -21,7 +21,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="0.79334284909999997" blue="0.022325013479999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <inset key="contentInset" minX="0.0" minY="0.0" maxX="0.0" maxY="85"/>
+                                <inset key="contentInset" minX="0.0" minY="0.0" maxX="0.0" maxY="135"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="MovieCell" rowHeight="135" id="lew-0E-UZw" customClass="MovieCell" customModule="MovieView" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="375" height="135"/>
@@ -60,6 +60,15 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <tabBar contentMode="scaleToFill" misplaced="YES" id="YE5-uo-wNA">
+                                <rect key="frame" x="0.0" y="618" width="375" height="49"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <items>
+                                    <tabBarItem title="Now Playing" image="NowPlaying.png" id="VVD-xZ-YkD"/>
+                                    <tabBarItem title="Top Rated" image="TopRated.png" id="sy8-om-hxK"/>
+                                </items>
+                            </tabBar>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
@@ -73,6 +82,7 @@
                     <size key="freeformSize" width="375" height="667"/>
                     <connections>
                         <outlet property="searchBar" destination="3XH-o0-YaI" id="pyQ-ID-VMG"/>
+                        <outlet property="tabBar" destination="YE5-uo-wNA" id="axY-ZT-U7Q"/>
                         <outlet property="tableView" destination="EWL-5E-YRf" id="8YX-9S-kAG"/>
                     </connections>
                 </viewController>
@@ -176,6 +186,10 @@
             <point key="canvasLocation" x="43.5" y="-9.5"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="NowPlaying.png" width="30" height="30"/>
+        <image name="TopRated.png" width="30" height="30"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

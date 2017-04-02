@@ -14,12 +14,13 @@ import Unbox
 import AFNetworking
 import KRProgressHUD
 
-class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate {
+class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UITabBarDelegate {
     let requestIdentifier = "NetworkError"
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet var searchBar: UISearchBar!
-    
+    @IBOutlet weak var tabBar: UITabBar!
+
     var movies:[MoviesModel] = []
     var filteredMovies:[MoviesModel] = []
     let pullToRefreshControl = UIRefreshControl()
@@ -31,6 +32,8 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.delegate = self
         tableView.dataSource = self
         searchBar.delegate = self
+        tabBar.delegate = self
+        tabBar.selectedItem = tabBar.items?.first
         pullToRefreshControl.addTarget(self, action: #selector(pullToRefresh(_:)), for: .valueChanged)
         tableView.insertSubview(pullToRefreshControl, at: 0)
         fetchMovies()
@@ -115,6 +118,22 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         cell.posterView.setImageWith((movie.posterUrl))
         return cell;
     }
+
+    //MARK: UITabBarDelegate
+    func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        if (tabBar.items?.first?.isEqual(item))! {
+            KRProgressHUD.show(progressHUDStyle: .black, message: "Loading...")
+            filteredMovies = movies
+            tableView.reloadData()
+            KRProgressHUD.dismiss()
+        } else {
+            KRProgressHUD.show(progressHUDStyle: .black, message: "Loading...")
+            filteredMovies = movies.filter { movie in ((movie.rating as NSString).floatValue > 7) }
+            tableView.reloadData()
+            KRProgressHUD.dismiss()
+        }
+    }
+
 }
 
 extension MoviesViewController: UNUserNotificationCenterDelegate{
