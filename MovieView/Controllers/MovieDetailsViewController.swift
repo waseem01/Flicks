@@ -44,8 +44,7 @@ class MovieDetailsViewController: UIViewController {
         movieTitle.sizeToFit()
         releaseDate.sizeToFit()
         rating.sizeToFit()
-        movieInfo.sizeToFit()
-
+        containerView.autoresizingMask = .flexibleHeight
     }
 
     private func customizeNavBar() {
