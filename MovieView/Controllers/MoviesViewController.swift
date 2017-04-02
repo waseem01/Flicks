@@ -12,15 +12,18 @@ import Unbox
 import AFNetworking
 import KRProgressHUD
 
-class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UITabBarDelegate {
+class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate,
+UISearchBarDelegate, UITabBarDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet var searchBar: UISearchBar!
     @IBOutlet weak var tabBar: UITabBar!
+    @IBOutlet weak var gridCollectionView: UICollectionView!
 
     var movies:[MoviesModel] = []
     var filteredMovies:[MoviesModel] = []
     let pullToRefreshControl = UIRefreshControl()
+    let loadingString = "Loading..."
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,11 +31,14 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         KRProgressHUD.show(progressHUDStyle: .black, message: "Loading...")
         tableView.delegate = self
         tableView.dataSource = self
+        gridCollectionView.delegate = self
+        gridCollectionView.dataSource = self
+        gridCollectionView.isHidden = true
         searchBar.delegate = self
         tabBar.delegate = self
         tabBar.selectedItem = tabBar.items?.first
         pullToRefreshControl.addTarget(self, action: #selector(pullToRefresh(_:)), for: .valueChanged)
-        pullToRefreshControl.attributedTitle = NSAttributedString(string: "Loading...")
+        pullToRefreshControl.attributedTitle = NSAttributedString(string: loadingString)
         tableView.insertSubview(pullToRefreshControl, at: 0)
         fetchMovies()
     }
@@ -47,11 +53,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         MoviesDbService().fetchMovies(onSuccess: { results -> Void in
             KRProgressHUD.dismiss()
             self.hideBannerMessage()
-            if results.count > 0 {
-                self.movies = results
-                self.filteredMovies = results
-                self.tableView.reloadData()
-            }
+            self.movies = results
+            self.filteredMovies = results
+            self.reloadData()
         }, onError: { error -> Void in
             KRProgressHUD.dismiss()
             self.showBannerMessage()
@@ -64,31 +68,81 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             delay: 0,
             options: .curveEaseOut,
             animations: {
-                self.bannerView.frame.origin.y = -30
+                var frame = self.bannerView.frame
+                frame.size.height = 0
+                self.bannerView.frame =  frame
+                self.errorImageView.isHidden = true
+                self.bannerLabel.isHidden = true
         },
             completion: { _ in
         })
     }
 
-    func showBannerMessage() {
+    private func showBannerMessage() {
         UIView.animate(
             withDuration: 0.7,
             delay: 0,
             options: .curveEaseOut,
             animations: {
-                self.bannerView.frame.origin.y = 0
+                var frame = self.bannerView.frame
+                frame.size.height = 30
+                self.bannerView.frame =  frame
+                self.errorImageView.isHidden = false
+                self.bannerLabel.isHidden = false
         },
             completion: { _ in
         })
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let movieDetailsController = segue.destination as! MovieDetailsViewController
-        let cell = sender as! MovieCell
-        let indexPath = tableView.indexPath(for: cell)
-        var movie = filteredMovies[(indexPath?.row)!]
-        movie.posterImage = cell.posterView.image!
-        movieDetailsController.movie = movie
+        if tableView.isHidden {
+            let movieDetailsController = segue.destination as! MovieDetailsViewController
+            let cell = sender as! MovieCollectionViewCell
+            let indexPath = gridCollectionView.indexPath(for: cell)
+            var movie = filteredMovies[(indexPath?.row)!]
+            movie.posterImage = cell.posterView.image!
+            movieDetailsController.movie = movie
+        } else {
+            let movieDetailsController = segue.destination as! MovieDetailsViewController
+            let cell = sender as! MovieCell
+            let indexPath = tableView.indexPath(for: cell)
+            var movie = filteredMovies[(indexPath?.row)!]
+            movie.posterImage = cell.posterView.image!
+            movieDetailsController.movie = movie
+        }
+    }
+
+    @IBAction func toggleTapped(_ sender: UIBarButtonItem) {
+        if tableView.isHidden {
+            tableView.isHidden = false
+            gridCollectionView.isHidden = true
+            tableView.insertSubview(pullToRefreshControl, at: 0)
+        } else {
+            tableView.isHidden = true
+            gridCollectionView.isHidden = false
+            pullToRefreshControl.tintColor = .white
+
+
+            let attributedString = NSMutableAttributedString(attributedString: NSAttributedString(string: loadingString))
+            attributedString.addAttribute(
+                NSForegroundColorAttributeName,
+                value: UIColor.white,
+                range: NSRange(
+                    location:0,
+                    length: loadingString.characters.count))
+
+            pullToRefreshControl.attributedTitle = attributedString
+            gridCollectionView.insertSubview(pullToRefreshControl, at: 0)
+            reloadData()
+        }
+    }
+
+    private func reloadData() {
+        if tableView.isHidden {
+            gridCollectionView.reloadData()
+        } else {
+            tableView.reloadData()
+        }
     }
 
     //MARK: UISearchBarDelegate
@@ -98,7 +152,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         } else {
             filteredMovies = movies.filter { movie in movie.title.lowercased().contains(searchText.lowercased()) }
         }
-        tableView.reloadData()
+        reloadData()
     }
 
     //MARK: UITableViewDelegate
@@ -115,44 +169,56 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         return cell;
     }
 
+    //MARK: UICollectionViewDelegate
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return filteredMovies.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MovieCollectionCell", for: indexPath) as! MovieCollectionViewCell
+        let movie = filteredMovies[indexPath.row]
+        cell.titleLabel.text = movie.title
+        cell.posterView.setImageWith((movie.posterUrl))
+        return cell
+    }
+
     //MARK: UITabBarDelegate
     func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         if (tabBar.items?.first?.isEqual(item))! {
             KRProgressHUD.show(progressHUDStyle: .black, message: "Loading...")
             filteredMovies = movies
-            tableView.reloadData()
+            reloadData()
             KRProgressHUD.dismiss()
         } else {
             KRProgressHUD.show(progressHUDStyle: .black, message: "Loading...")
             filteredMovies = movies.filter { movie in ((movie.rating as NSString).floatValue > 7) }
-            tableView.reloadData()
+            reloadData()
             KRProgressHUD.dismiss()
         }
     }
 
     //MARK: Lazyvars
     private lazy var bannerView: UIView = {
-        let view = UIView(frame: CGRect(x: 0, y: -30, width: self.tableView.frame.width, height: 30))
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: self.tableView.frame.width, height: 0))
         view.backgroundColor = UIColor.black
         view.alpha = 0.9
-        view.addSubview(self.errorImageView)
-        view.addSubview(self.bannerLabel)
         self.tableView.addSubview(view)
         return view
     }()
 
     private lazy var errorImageView: UIImageView = {
-        let imageView = UIImageView(frame: CGRect(x: self.tableView.frame.width/3-20, y: 5, width: 20, height: 20))
+        let imageView = UIImageView(frame: CGRect(x: self.tableView.frame.width/3 - 20, y: 5, width: 20, height: 20))
         imageView.image = UIImage(named: "Error")
+        self.bannerView.addSubview(imageView)
         return imageView
     }()
 
     private lazy var bannerLabel: UILabel = {
-        let label = UILabel(frame: CGRect(x: self.tableView.frame.width/3+10, y: 5, width: self.tableView.frame.width, height: 20))
+        let label = UILabel(frame: CGRect(x: self.tableView.frame.width/3 + 10, y: 5, width: self.tableView.frame.width, height: 20))
         label.textColor = .white
         label.font = UIFont.boldSystemFont(ofSize: 12.0)
         label.text = "Network Error"
+        self.bannerView.addSubview(label)
         return label
     }()
-    
 }

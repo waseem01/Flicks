@@ -35,16 +35,15 @@ class MovieDetailsViewController: UIViewController {
         setBackgroundView()
         customizeNavBar()
         scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        scrollView.frame.size.width = view.frame.size.width - 40
+        containerView.frame.size.width = view.frame.size.width - 40
+        movieInfo.frame.size.width = view.frame.size.width - 50
         scrollView.contentSize = CGSize(width: containerView.frame.width, height: containerView.frame.height+5)
         scrollView.contentOffset = CGPoint(x: 0, y: -100)
         movieTitle.text = movie.title
         releaseDate.text = "Released: " + movie.releaseDate
         rating.text = "Rating: " + movie.rating
         movieInfo.text = movie.overview
-        movieTitle.sizeToFit()
-        releaseDate.sizeToFit()
-        rating.sizeToFit()
-        containerView.autoresizingMask = .flexibleHeight
     }
 
     private func customizeNavBar() {
@@ -66,9 +65,9 @@ class MovieDetailsViewController: UIViewController {
     }
 
     private func setBackgroundView() {
-        let imageView = UIImageView(frame: self.view.frame)
+        let imageView = UIImageView(frame: view.frame)
         imageView.image = movie.backgroundImage
-        self.view.addSubview(imageView)
-        self.view.sendSubview(toBack: imageView)
+        view.addSubview(imageView)
+        view.sendSubview(toBack: imageView)
     }
 }

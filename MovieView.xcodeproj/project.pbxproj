@@ -12,9 +12,12 @@
 		1C4331881E8F155000AE8C31 /* Error.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C4331871E8F155000AE8C31 /* Error.png */; };
 		1C60BA4D1E8BD56500F391AF /* MoviesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C60BA4C1E8BD56500F391AF /* MoviesModel.swift */; };
 		1C66B0F61E8BF20A00AB832B /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C66B0F51E8BF20A00AB832B /* MovieCell.swift */; };
+		1C8871191E91C7D300EC688C /* Grid.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C8871171E91C7D300EC688C /* Grid.png */; };
+		1C88711A1E91C7D300EC688C /* List.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C8871181E91C7D300EC688C /* List.png */; };
 		1C8E055B1E8C6BD900126AFA /* MovieDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8E055A1E8C6BD900126AFA /* MovieDetailsViewController.swift */; };
 		1CA6C6C71E90BA4C00C3D95D /* NowPlaying.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CA6C6C51E90BA4C00C3D95D /* NowPlaying.png */; };
 		1CA6C6C81E90BA4C00C3D95D /* TopRated.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CA6C6C61E90BA4C00C3D95D /* TopRated.png */; };
+		1CA6C6CC1E9198B500C3D95D /* MovieCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA6C6CB1E9198B500C3D95D /* MovieCollectionViewCell.swift */; };
 		1CD5CB951E8B3A7900E1E8BA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CD5CB941E8B3A7900E1E8BA /* AppDelegate.swift */; };
 		1CD5CB9A1E8B3A7900E1E8BA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1CD5CB981E8B3A7900E1E8BA /* Main.storyboard */; };
 		1CD5CB9C1E8B3A7900E1E8BA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CD5CB9B1E8B3A7900E1E8BA /* Assets.xcassets */; };
@@ -28,9 +31,12 @@
 		1C4331871E8F155000AE8C31 /* Error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Error.png; path = Resources/Error.png; sourceTree = "<group>"; };
 		1C60BA4C1E8BD56500F391AF /* MoviesModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MoviesModel.swift; path = Models/MoviesModel.swift; sourceTree = "<group>"; };
 		1C66B0F51E8BF20A00AB832B /* MovieCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MovieCell.swift; path = Views/MovieCell.swift; sourceTree = "<group>"; };
+		1C8871171E91C7D300EC688C /* Grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Grid.png; path = Resources/Grid.png; sourceTree = "<group>"; };
+		1C8871181E91C7D300EC688C /* List.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = List.png; path = Resources/List.png; sourceTree = "<group>"; };
 		1C8E055A1E8C6BD900126AFA /* MovieDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MovieDetailsViewController.swift; path = Controllers/MovieDetailsViewController.swift; sourceTree = "<group>"; };
 		1CA6C6C51E90BA4C00C3D95D /* NowPlaying.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = NowPlaying.png; path = Resources/NowPlaying.png; sourceTree = "<group>"; };
 		1CA6C6C61E90BA4C00C3D95D /* TopRated.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = TopRated.png; path = Resources/TopRated.png; sourceTree = "<group>"; };
+		1CA6C6CB1E9198B500C3D95D /* MovieCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MovieCollectionViewCell.swift; path = Views/MovieCollectionViewCell.swift; sourceTree = "<group>"; };
 		1CD5CB911E8B3A7900E1E8BA /* MovieView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CD5CB941E8B3A7900E1E8BA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1CD5CB991E8B3A7900E1E8BA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -65,6 +71,8 @@
 		1C4331861E8F152800AE8C31 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1C8871171E91C7D300EC688C /* Grid.png */,
+				1C8871181E91C7D300EC688C /* List.png */,
 				1CA6C6C51E90BA4C00C3D95D /* NowPlaying.png */,
 				1CA6C6C61E90BA4C00C3D95D /* TopRated.png */,
 				1C4331871E8F155000AE8C31 /* Error.png */,
@@ -84,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				1C66B0F51E8BF20A00AB832B /* MovieCell.swift */,
+				1CA6C6CB1E9198B500C3D95D /* MovieCollectionViewCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -109,9 +118,9 @@
 		1CD5CB931E8B3A7900E1E8BA /* MovieView */ = {
 			isa = PBXGroup;
 			children = (
-				1C4331861E8F152800AE8C31 /* Resources */,
 				1CD5CBA81E8B3C1B00E1E8BA /* Controllers */,
 				1C60BA4B1E8BD52300F391AF /* Models */,
+				1C4331861E8F152800AE8C31 /* Resources */,
 				1C3FF1F31E8BE2F6007ABB28 /* Service */,
 				1C66B0F41E8BF1CA00AB832B /* Views */,
 				1CD5CB981E8B3A7900E1E8BA /* Main.storyboard */,
@@ -211,7 +220,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1C88711A1E91C7D300EC688C /* List.png in Resources */,
 				1CA6C6C81E90BA4C00C3D95D /* TopRated.png in Resources */,
+				1C8871191E91C7D300EC688C /* Grid.png in Resources */,
 				1CA6C6C71E90BA4C00C3D95D /* NowPlaying.png in Resources */,
 				1CD5CB9F1E8B3A7900E1E8BA /* LaunchScreen.storyboard in Resources */,
 				1CD5CB9C1E8B3A7900E1E8BA /* Assets.xcassets in Resources */,
@@ -279,6 +290,7 @@
 				1CD5CBAA1E8B3C6E00E1E8BA /* MoviesViewController.swift in Sources */,
 				1C8E055B1E8C6BD900126AFA /* MovieDetailsViewController.swift in Sources */,
 				1C3FF1F71E8BE42E007ABB28 /* MoviesDbService.swift in Sources */,
+				1CA6C6CC1E9198B500C3D95D /* MovieCollectionViewCell.swift in Sources */,
 				1C66B0F61E8BF20A00AB832B /* MovieCell.swift in Sources */,
 				1C60BA4D1E8BD56500F391AF /* MoviesModel.swift in Sources */,
 			);

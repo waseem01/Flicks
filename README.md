@@ -16,7 +16,7 @@ The following **required** functionality is complete:
 
 The following **optional** features are implemented:
 * [x] Add a tab bar for Now Playing or Top Rated movies.
-* [ ] Implement a UISegmentedControl to switch between a list view and a grid view.
+* [x] Implement a UISegmentedControl to switch between a list view and a grid view.
 * [x] Add a search bar.
 * [ ] All images fade in as they are loading.
 * [x] For the large poster, load the low-res image first and switch to high-res when complete.
@@ -32,6 +32,4 @@ The following **optional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-
-
-GIF created with [MakeAGif](http://www.makeagif.com/licecap/).
+![Video Walkthrough](flicks.gif)
