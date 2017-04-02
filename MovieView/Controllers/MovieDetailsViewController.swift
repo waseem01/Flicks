@@ -33,6 +33,7 @@ class MovieDetailsViewController: UIViewController {
     //MARK Private methods
     private func setupViews() {
         setBackgroundView()
+        customizeNavBar()
         scrollView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         scrollView.contentSize = CGSize(width: containerView.frame.width, height: containerView.frame.height+5)
         scrollView.contentOffset = CGPoint(x: 0, y: -100)
@@ -45,6 +46,24 @@ class MovieDetailsViewController: UIViewController {
         rating.sizeToFit()
         movieInfo.sizeToFit()
 
+    }
+
+    private func customizeNavBar() {
+        navigationItem.title = movie.title
+        if let navigationBar = navigationController?.navigationBar {
+            navigationBar.topItem?.title = ""
+            navigationBar.tintColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
+
+            let shadow = NSShadow()
+            shadow.shadowColor = UIColor.gray.withAlphaComponent(0.5)
+            shadow.shadowOffset = CGSize(width: 2, height: 2)
+            shadow.shadowBlurRadius = 4;
+            navigationBar.titleTextAttributes = [
+                NSFontAttributeName : UIFont.boldSystemFont(ofSize: 22),
+                NSForegroundColorAttributeName : UIColor.black,
+                NSShadowAttributeName : shadow
+            ]
+        }
     }
 
     private func setBackgroundView() {
