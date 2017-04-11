@@ -1,6 +1,6 @@
 # Week 1 Project: *Flicks*
 
-**Flicks** is a tip calculator application for iOS.
+**Flicks**  imdb application for iOS.
 
 Submitted by: **Waseem Mohammed**
 
